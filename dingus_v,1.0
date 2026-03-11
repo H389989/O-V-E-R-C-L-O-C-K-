@@ -15,15 +15,17 @@ local superSpeed = 80
 local normalJump = 50
 local superJump = 120
 
+-- states
 local immortality = false
 local punchMode = false
 local espEnabled = false
+local killTouch = false
 
 local tracers = {}
 
--- =====================
+-------------------------------------------------
 -- SUPSERSONIC PUNCH
--- =====================
+-------------------------------------------------
 
 local function punchTarget(target)
 
@@ -52,16 +54,58 @@ mouse.Button1Down:Connect(function()
 
 end)
 
--- =====================
+-------------------------------------------------
+-- KILL TOUCH SYSTEM
+-------------------------------------------------
+
+local function setupKillTouch(character)
+
+	for _,part in pairs(character:GetDescendants()) do
+
+		if part:IsA("BasePart") then
+
+			part.Touched:Connect(function(hit)
+
+				if not killTouch then return end
+
+				local model = hit:FindFirstAncestorOfClass("Model")
+				if not model then return end
+
+				local hum = model:FindFirstChildOfClass("Humanoid")
+
+				if hum and model ~= character then
+					hum.Health = 0
+				end
+
+			end)
+
+		end
+
+	end
+
+end
+
+setupKillTouch(char)
+
+player.CharacterAdded:Connect(function(c)
+
+	char = c
+	humanoid = c:WaitForChild("Humanoid")
+
+	setupKillTouch(c)
+
+end)
+
+-------------------------------------------------
 -- GUI
--- =====================
+-------------------------------------------------
 
 local gui = Instance.new("ScreenGui")
 gui.Parent = player.PlayerGui
 gui.ResetOnSpawn = false
 
 local main = Instance.new("Frame")
-main.Size = UDim2.new(0,260,0,260)
+main.Size = UDim2.new(0,260,0,300)
 main.Position = UDim2.new(0.05,0,0.4,0)
 main.BackgroundColor3 = Color3.fromRGB(20,20,20)
 main.BorderSizePixel = 0
@@ -88,9 +132,9 @@ local layout = Instance.new("UIListLayout")
 layout.Padding = UDim.new(0,6)
 layout.Parent = container
 
--- =====================
--- BUTTON CREATOR
--- =====================
+-------------------------------------------------
+-- BUTTON CREATORS
+-------------------------------------------------
 
 local function createToggle(name,callback)
 
@@ -142,9 +186,9 @@ local function createButton(name,callback)
 
 end
 
--- =====================
+-------------------------------------------------
 -- ABILITIES
--- =====================
+-------------------------------------------------
 
 createToggle("Immortality",function(state)
 
@@ -182,23 +226,29 @@ createButton("Supersonic Punch",function()
 
 end)
 
+createToggle("Kill Touch",function(state)
+
+	killTouch = state
+
+end)
+
 createToggle("Locator ESP",function(state)
 
 	espEnabled = state
 
 end)
 
--- =====================
--- ESP SYSTEM
--- =====================
+-------------------------------------------------
+-- LOCATOR ESP
+-------------------------------------------------
 
 local espFolder = Instance.new("Folder")
 espFolder.Name = "ESP"
 espFolder.Parent = gui
 
-local function createTracer(player)
+local function createTracer(p)
 
-	if player == Players.LocalPlayer then return end
+	if p == player then return end
 
 	local line = Instance.new("Frame")
 	line.BackgroundColor3 = Color3.fromRGB(255,0,0)
@@ -208,7 +258,7 @@ local function createTracer(player)
 	line.Visible = false
 	line.Parent = espFolder
 
-	tracers[player] = line
+	tracers[p] = line
 
 end
 
@@ -233,9 +283,9 @@ RunService.RenderStepped:Connect(function()
 
 	local screenSize = camera.ViewportSize
 
-	for player,line in pairs(tracers) do
+	for p,line in pairs(tracers) do
 
-		local char = player.Character
+		local char = p.Character
 		local root = char and char:FindFirstChild("HumanoidRootPart")
 
 		if root then
@@ -269,9 +319,9 @@ RunService.RenderStepped:Connect(function()
 
 end)
 
--- =====================
--- DRAGGING
--- =====================
+-------------------------------------------------
+-- DRAG GUI
+-------------------------------------------------
 
 local dragging = false
 local dragStart
@@ -312,9 +362,9 @@ UIS.InputChanged:Connect(function(input)
 
 end)
 
--- =====================
--- GUI TOGGLE
--- =====================
+-------------------------------------------------
+-- TOGGLE GUI
+-------------------------------------------------
 
 UIS.InputBegan:Connect(function(input,gp)
 
