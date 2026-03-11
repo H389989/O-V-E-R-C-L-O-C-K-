@@ -1,0 +1,325 @@
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local mouse = player:GetMouse()
+local camera = workspace.CurrentCamera
+
+local char = player.Character or player.CharacterAdded:Wait()
+local humanoid = char:WaitForChild("Humanoid")
+
+-- movement values
+local normalSpeed = 16
+local superSpeed = 80
+local normalJump = 50
+local superJump = 120
+
+local immortality = false
+local punchMode = false
+local espEnabled = false
+
+local tracers = {}
+
+-- =====================
+-- SUPSERSONIC PUNCH
+-- =====================
+
+local function punchTarget(target)
+
+	local model = target:FindFirstAncestorOfClass("Model")
+	if not model then return end
+
+	local hum = model:FindFirstChildOfClass("Humanoid")
+	if not hum then return end
+
+	if model ~= player.Character then
+		hum:TakeDamage(100)
+	end
+
+end
+
+mouse.Button1Down:Connect(function()
+
+	if not punchMode then return end
+
+	local target = mouse.Target
+	if target then
+		punchTarget(target)
+	end
+
+	punchMode = false
+
+end)
+
+-- =====================
+-- GUI
+-- =====================
+
+local gui = Instance.new("ScreenGui")
+gui.Parent = player.PlayerGui
+gui.ResetOnSpawn = false
+
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0,260,0,260)
+main.Position = UDim2.new(0.05,0,0.4,0)
+main.BackgroundColor3 = Color3.fromRGB(20,20,20)
+main.BorderSizePixel = 0
+main.Parent = gui
+
+Instance.new("UICorner",main)
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,0,0,30)
+title.Text = "Dingus Ability Panel"
+title.BackgroundColor3 = Color3.fromRGB(30,30,30)
+title.TextColor3 = Color3.new(1,1,1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.Parent = main
+
+local container = Instance.new("Frame")
+container.Size = UDim2.new(1,-10,1,-40)
+container.Position = UDim2.new(0,5,0,35)
+container.BackgroundTransparency = 1
+container.Parent = main
+
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0,6)
+layout.Parent = container
+
+-- =====================
+-- BUTTON CREATOR
+-- =====================
+
+local function createToggle(name,callback)
+
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(1,0,0,35)
+	button.BackgroundColor3 = Color3.fromRGB(45,45,45)
+	button.TextColor3 = Color3.new(1,1,1)
+	button.Text = name.." [OFF]"
+	button.Font = Enum.Font.Gotham
+	button.TextSize = 14
+	button.Parent = container
+
+	Instance.new("UICorner",button)
+
+	local state = false
+
+	button.MouseButton1Click:Connect(function()
+
+		state = not state
+
+		if state then
+			button.Text = name.." [ON]"
+			button.BackgroundColor3 = Color3.fromRGB(0,170,127)
+		else
+			button.Text = name.." [OFF]"
+			button.BackgroundColor3 = Color3.fromRGB(45,45,45)
+		end
+
+		callback(state)
+
+	end)
+
+end
+
+local function createButton(name,callback)
+
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(1,0,0,35)
+	button.BackgroundColor3 = Color3.fromRGB(0,170,127)
+	button.TextColor3 = Color3.new(1,1,1)
+	button.Text = name
+	button.Font = Enum.Font.GothamBold
+	button.TextSize = 14
+	button.Parent = container
+
+	Instance.new("UICorner",button)
+
+	button.MouseButton1Click:Connect(callback)
+
+end
+
+-- =====================
+-- ABILITIES
+-- =====================
+
+createToggle("Immortality",function(state)
+
+	immortality = state
+
+	if state then
+
+		humanoid.Health = math.huge
+
+		humanoid:GetPropertyChangedSignal("Health"):Connect(function()
+			if immortality then
+				humanoid.Health = math.huge
+			end
+		end)
+
+	end
+
+end)
+
+createToggle("Super Speed",function(state)
+
+	humanoid.WalkSpeed = state and superSpeed or normalSpeed
+
+end)
+
+createToggle("Super Jump",function(state)
+
+	humanoid.JumpPower = state and superJump or normalJump
+
+end)
+
+createButton("Supersonic Punch",function()
+
+	punchMode = true
+
+end)
+
+createToggle("Locator ESP",function(state)
+
+	espEnabled = state
+
+end)
+
+-- =====================
+-- ESP SYSTEM
+-- =====================
+
+local espFolder = Instance.new("Folder")
+espFolder.Name = "ESP"
+espFolder.Parent = gui
+
+local function createTracer(player)
+
+	if player == Players.LocalPlayer then return end
+
+	local line = Instance.new("Frame")
+	line.BackgroundColor3 = Color3.fromRGB(255,0,0)
+	line.BorderSizePixel = 0
+	line.AnchorPoint = Vector2.new(0.5,0.5)
+	line.Size = UDim2.new(0,2,0,100)
+	line.Visible = false
+	line.Parent = espFolder
+
+	tracers[player] = line
+
+end
+
+for _,p in pairs(Players:GetPlayers()) do
+	createTracer(p)
+end
+
+Players.PlayerAdded:Connect(function(p)
+	createTracer(p)
+end)
+
+RunService.RenderStepped:Connect(function()
+
+	if not espEnabled then
+
+		for _,line in pairs(tracers) do
+			line.Visible = false
+		end
+
+		return
+	end
+
+	local screenSize = camera.ViewportSize
+
+	for player,line in pairs(tracers) do
+
+		local char = player.Character
+		local root = char and char:FindFirstChild("HumanoidRootPart")
+
+		if root then
+
+			local pos,visible = camera:WorldToViewportPoint(root.Position)
+
+			if visible then
+
+				local from = Vector2.new(screenSize.X/2,screenSize.Y)
+				local to = Vector2.new(pos.X,pos.Y)
+
+				local dist = (from - to).Magnitude
+
+				line.Size = UDim2.new(0,2,0,dist)
+				line.Position = UDim2.new(0,(from.X+to.X)/2,0,(from.Y+to.Y)/2)
+
+				local angle = math.deg(math.atan2(to.Y-from.Y,to.X-from.X))
+				line.Rotation = angle+90
+
+				line.Visible = true
+
+			else
+				line.Visible = false
+			end
+
+		else
+			line.Visible = false
+		end
+
+	end
+
+end)
+
+-- =====================
+-- DRAGGING
+-- =====================
+
+local dragging = false
+local dragStart
+local startPos
+
+title.InputBegan:Connect(function(input)
+
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = main.Position
+	end
+
+end)
+
+title.InputEnded:Connect(function(input)
+
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
+
+end)
+
+UIS.InputChanged:Connect(function(input)
+
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+
+		local delta = input.Position - dragStart
+
+		main.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+
+	end
+
+end)
+
+-- =====================
+-- GUI TOGGLE
+-- =====================
+
+UIS.InputBegan:Connect(function(input,gp)
+
+	if not gp and input.KeyCode == Enum.KeyCode.RightShift then
+		main.Visible = not main.Visible
+	end
+
+end)
