@@ -1,0 +1,40 @@
+local player = game.Players.LocalPlayer
+local backpack = player:WaitForChild("Backpack")
+
+-- Create UI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 150, 0, 50)
+button.Position = UDim2.new(0.5, -75, 0.8, 0)
+button.Text = "Find"
+button.Parent = screenGui
+
+-- Search function
+local function findGoldenEgg()
+    for _, obj in pairs(game:GetDescendants()) do
+        if obj:IsA("Tool") and obj.Name == "Golden Egg" then
+            return obj
+        end
+    end
+    return nil
+end
+
+-- Button click
+button.MouseButton1Click:Connect(function()
+    button.Text = "Searching..."
+
+    local tool = findGoldenEgg()
+
+    if tool then
+        local clone = tool:Clone()
+        clone.Parent = backpack
+        button.Text = "Found!"
+    else
+        button.Text = "Not Found"
+    end
+
+    wait(2)
+    button.Text = "Find"
+end)
