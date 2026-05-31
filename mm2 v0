@@ -7,7 +7,6 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local myHumanoid = nil
 
--- Update local humanoid reference
 player.CharacterAdded:Connect(function(char)
     myHumanoid = char:WaitForChild("Humanoid")
 end)
@@ -18,15 +17,16 @@ end
 local noclipEnabled = false
 local immortalityEnabled = false
 
--- GUI Setup (same as before)
+-- GUI Setup
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "CoolAdminMenu"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
+-- Taller frame for new button
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 280, 0, 460)
-mainFrame.Position = UDim2.new(0.5, -140, 0.5, -230)
+mainFrame.Size = UDim2.new(0, 280, 0, 520)
+mainFrame.Position = UDim2.new(0.5, -140, 0.5, -260)
 mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
@@ -45,7 +45,7 @@ title.Parent = mainFrame
 
 local noclipBtn = Instance.new("TextButton")
 noclipBtn.Size = UDim2.new(0.9, 0, 0, 45)
-noclipBtn.Position = UDim2.new(0.05, 0, 0.14, 0)
+noclipBtn.Position = UDim2.new(0.05, 0, 0.12, 0)
 noclipBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 noclipBtn.Text = "Noclip: OFF"
 noclipBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -55,7 +55,7 @@ noclipBtn.Parent = mainFrame
 
 local immortalityBtn = Instance.new("TextButton")
 immortalityBtn.Size = UDim2.new(0.9, 0, 0, 45)
-immortalityBtn.Position = UDim2.new(0.05, 0, 0.27, 0)
+immortalityBtn.Position = UDim2.new(0.05, 0, 0.23, 0)
 immortalityBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 immortalityBtn.Text = "Immortality: OFF"
 immortalityBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -65,7 +65,7 @@ immortalityBtn.Parent = mainFrame
 
 local killAllBtn = Instance.new("TextButton")
 killAllBtn.Size = UDim2.new(0.9, 0, 0, 45)
-killAllBtn.Position = UDim2.new(0.05, 0, 0.40, 0)
+killAllBtn.Position = UDim2.new(0.05, 0, 0.34, 0)
 killAllBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
 killAllBtn.Text = "💀 KILL ALL OTHERS"
 killAllBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -73,10 +73,20 @@ killAllBtn.TextScaled = true
 killAllBtn.Font = Enum.Font.GothamBold
 killAllBtn.Parent = mainFrame
 
--- Teleport Section (unchanged)
+local getItemsBtn = Instance.new("TextButton")  -- NEW BUTTON
+getItemsBtn.Size = UDim2.new(0.9, 0, 0, 45)
+getItemsBtn.Position = UDim2.new(0.05, 0, 0.45, 0)
+getItemsBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+getItemsBtn.Text = "🎁 GET ALL ITEMS"
+getItemsBtn.TextColor3 = Color3.new(1, 1, 1)
+getItemsBtn.TextScaled = true
+getItemsBtn.Font = Enum.Font.GothamBold
+getItemsBtn.Parent = mainFrame
+
+-- Teleport Section
 local tpLabel = Instance.new("TextLabel")
 tpLabel.Size = UDim2.new(0.9, 0, 0, 25)
-tpLabel.Position = UDim2.new(0.05, 0, 0.55, 0)
+tpLabel.Position = UDim2.new(0.05, 0, 0.58, 0)
 tpLabel.BackgroundTransparency = 1
 tpLabel.Text = "Teleport Section"
 tpLabel.TextColor3 = Color3.new(1, 1, 1)
@@ -86,7 +96,7 @@ tpLabel.Parent = mainFrame
 
 local usernameBox = Instance.new("TextBox")
 usernameBox.Size = UDim2.new(0.9, 0, 0, 40)
-usernameBox.Position = UDim2.new(0.05, 0, 0.61, 0)
+usernameBox.Position = UDim2.new(0.05, 0, 0.63, 0)
 usernameBox.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 usernameBox.PlaceholderText = "Enter username..."
 usernameBox.Text = ""
@@ -97,7 +107,7 @@ usernameBox.Parent = mainFrame
 
 local tpToMeBtn = Instance.new("TextButton")
 tpToMeBtn.Size = UDim2.new(0.9, 0, 0, 45)
-tpToMeBtn.Position = UDim2.new(0.05, 0, 0.73, 0)
+tpToMeBtn.Position = UDim2.new(0.05, 0, 0.74, 0)
 tpToMeBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 100)
 tpToMeBtn.Text = "⬇️ BRING PLAYER TO ME"
 tpToMeBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -125,7 +135,7 @@ closeBtn.TextScaled = true
 closeBtn.Font = Enum.Font.GothamBold
 closeBtn.Parent = mainFrame
 
--- Mobile Toggle Button
+-- Mobile Toggle
 local mobileToggle = Instance.new("TextButton")
 mobileToggle.Size = UDim2.new(0, 60, 0, 60)
 mobileToggle.Position = UDim2.new(0, 20, 0.5, -30)
@@ -146,7 +156,7 @@ local function toggleMenu()
     mainFrame.Visible = not mainFrame.Visible
 end
 
--- Noclip (unchanged)
+-- Noclip
 local noclipConnection
 noclipBtn.MouseButton1Click:Connect(function()
     noclipEnabled = not noclipEnabled
@@ -168,7 +178,7 @@ noclipBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Immortality (unchanged)
+-- Immortality
 immortalityBtn.MouseButton1Click:Connect(function()
     immortalityEnabled = not immortalityEnabled
     immortalityBtn.Text = "Immortality: " .. (immortalityEnabled and "ON" or "OFF")
@@ -188,22 +198,17 @@ immortalityBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 🔥 NEW KILL ALL - Searches entire game for Humanoids
+-- Kill All Others (Game-wide)
 killAllBtn.MouseButton1Click:Connect(function()
     local killed = 0
-    
     for _, humanoid in pairs(game:GetDescendants()) do
         if humanoid:IsA("Humanoid") then
-            -- Skip our own humanoid
             if humanoid == myHumanoid or (humanoid.Parent and humanoid.Parent == player.Character) then
                 continue
             end
-            
-            -- Kill it
             humanoid.Health = 0
             humanoid:TakeDamage(999999)
             
-            -- Extra destruction
             task.spawn(function()
                 for i = 1, 4 do
                     if humanoid and humanoid.Parent then
@@ -215,15 +220,36 @@ killAllBtn.MouseButton1Click:Connect(function()
                     task.wait(0.08)
                 end
             end)
-            
             killed += 1
         end
     end
-    
     print("💀 Kill All executed - Targeted " .. killed .. " humanoids")
 end)
 
--- Bring Player TO Me (unchanged)
+-- 🎁 NEW: Get All Items
+getItemsBtn.MouseButton1Click:Connect(function()
+    local backpack = player:FindFirstChild("Backpack")
+    if not backpack then return end
+    
+    local collected = 0
+    
+    for _, item in pairs(game:GetDescendants()) do
+        if item:IsA("Tool") or item:IsA("HopperBin") then
+            -- Skip items already in our backpack or character
+            if item.Parent == backpack or (player.Character and item.Parent == player.Character) then
+                continue
+            end
+            
+            local clone = item:Clone()
+            clone.Parent = backpack
+            collected += 1
+        end
+    end
+    
+    print("🎁 Collected " .. collected .. " items into your backpack!")
+end)
+
+-- Bring Player TO Me
 tpToMeBtn.MouseButton1Click:Connect(function()
     local targetName = usernameBox.Text:match("^%s*(.-)%s*$")
     if targetName == "" then
@@ -244,7 +270,6 @@ tpToMeBtn.MouseButton1Click:Connect(function()
     if targetPlayer and targetPlayer ~= player and targetPlayer.Character then
         local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
         local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-        
         if myRoot and targetRoot then
             targetRoot.CFrame = myRoot.CFrame + Vector3.new(3, 2, 0)
             print("⬇️ Brought " .. targetPlayer.Name .. " to you")
@@ -254,7 +279,7 @@ tpToMeBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Teleport TO Player (unchanged)
+-- Teleport TO Player
 meToThemBtn.MouseButton1Click:Connect(function()
     local targetName = usernameBox.Text:match("^%s*(.-)%s*$")
     if targetName == "" then
@@ -275,7 +300,6 @@ meToThemBtn.MouseButton1Click:Connect(function()
     if targetPlayer and targetPlayer.Character then
         local root = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
         local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-        
         if root and myRoot then
             myRoot.CFrame = root.CFrame + Vector3.new(0, 3, 0)
             print("🚀 Teleported to " .. targetPlayer.Name)
@@ -301,4 +325,5 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
-print("✅ Cool Admin Menu loaded with Game-Wide Kill All!")
+print("✅ Cool Admin Menu loaded with Get All Items!")
+print("Mobile: Tap ⚡ | PC: Press Insert")
