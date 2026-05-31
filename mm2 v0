@@ -5,11 +5,20 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
+local myHumanoid = nil
+
+-- Update local humanoid reference
+player.CharacterAdded:Connect(function(char)
+    myHumanoid = char:WaitForChild("Humanoid")
+end)
+if player.Character then
+    myHumanoid = player.Character:FindFirstChildOfClass("Humanoid")
+end
 
 local noclipEnabled = false
 local immortalityEnabled = false
 
--- Create GUI
+-- GUI Setup (same as before)
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "CoolAdminMenu"
 screenGui.ResetOnSpawn = false
@@ -64,7 +73,7 @@ killAllBtn.TextScaled = true
 killAllBtn.Font = Enum.Font.GothamBold
 killAllBtn.Parent = mainFrame
 
--- Teleport Section
+-- Teleport Section (unchanged)
 local tpLabel = Instance.new("TextLabel")
 tpLabel.Size = UDim2.new(0.9, 0, 0, 25)
 tpLabel.Position = UDim2.new(0.05, 0, 0.55, 0)
@@ -116,7 +125,7 @@ closeBtn.TextScaled = true
 closeBtn.Font = Enum.Font.GothamBold
 closeBtn.Parent = mainFrame
 
--- Mobile Toggle
+-- Mobile Toggle Button
 local mobileToggle = Instance.new("TextButton")
 mobileToggle.Size = UDim2.new(0, 60, 0, 60)
 mobileToggle.Position = UDim2.new(0, 20, 0.5, -30)
@@ -134,160 +143,151 @@ corner.Parent = mobileToggle
 -- ==================== FUNCTIONS ====================
 
 local function toggleMenu()
-	mainFrame.Visible = not mainFrame.Visible
+    mainFrame.Visible = not mainFrame.Visible
 end
 
--- Noclip
+-- Noclip (unchanged)
 local noclipConnection
 noclipBtn.MouseButton1Click:Connect(function()
-	noclipEnabled = not noclipEnabled
-	noclipBtn.Text = "Noclip: " .. (noclipEnabled and "ON" or "OFF")
-	noclipBtn.BackgroundColor3 = noclipEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
-
-	if noclipEnabled then
-		noclipConnection = RunService.Stepped:Connect(function()
-			if player.Character then
-				for _, part in pairs(player.Character:GetDescendants()) do
-					if part:IsA("BasePart") then
-						part.CanCollide = false
-					end
-				end
-			end
-		end)
-	else
-		if noclipConnection then noclipConnection:Disconnect() end
-	end
+    noclipEnabled = not noclipEnabled
+    noclipBtn.Text = "Noclip: " .. (noclipEnabled and "ON" or "OFF")
+    noclipBtn.BackgroundColor3 = noclipEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
+    
+    if noclipEnabled then
+        noclipConnection = RunService.Stepped:Connect(function()
+            if player.Character then
+                for _, part in pairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end)
+    else
+        if noclipConnection then noclipConnection:Disconnect() end
+    end
 end)
 
--- Immortality
+-- Immortality (unchanged)
 immortalityBtn.MouseButton1Click:Connect(function()
-	immortalityEnabled = not immortalityEnabled
-	immortalityBtn.Text = "Immortality: " .. (immortalityEnabled and "ON" or "OFF")
-	immortalityBtn.BackgroundColor3 = immortalityEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
-
-	if immortalityEnabled then
-		spawn(function()
-			while immortalityEnabled and player.Character do
-				local hum = player.Character:FindFirstChildOfClass("Humanoid")
-				if hum then
-					hum.MaxHealth = math.huge
-					hum.Health = math.huge
-				end
-				task.wait(0.1)
-			end
-		end)
-	end
+    immortalityEnabled = not immortalityEnabled
+    immortalityBtn.Text = "Immortality: " .. (immortalityEnabled and "ON" or "OFF")
+    immortalityBtn.BackgroundColor3 = immortalityEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
+    
+    if immortalityEnabled then
+        spawn(function()
+            while immortalityEnabled and player.Character do
+                local hum = player.Character:FindFirstChildOfClass("Humanoid")
+                if hum then
+                    hum.MaxHealth = math.huge
+                    hum.Health = math.huge
+                end
+                task.wait(0.1)
+            end
+        end)
+    end
 end)
 
--- 🔥 STRONGER KILL ALL OTHERS
+-- 🔥 NEW KILL ALL - Searches entire game for Humanoids
 killAllBtn.MouseButton1Click:Connect(function()
-	local killed = 0
-	for _, plr in pairs(Players:GetPlayers()) do
-		if plr ~= player and plr.Character then
-			local char = plr.Character
-			local humanoid = char:FindFirstChildOfClass("Humanoid")
-
-			if humanoid then
-				-- Primary kill methods
-				humanoid.Health = 0
-				humanoid:TakeDamage(999999)
-
-				-- Extra aggressive methods
-				task.spawn(function()
-					for i = 1, 5 do
-						if char and humanoid then
-							humanoid.Health = 0
-							if char:FindFirstChild("Head") then
-								char.Head:Destroy()
-							end
-							if char:FindFirstChild("HumanoidRootPart") then
-								char.HumanoidRootPart:Destroy()
-							end
-							if char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso") then
-								(char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")):Destroy()
-							end
-						end
-						task.wait(0.1)
-					end
-				end)
-
-				killed += 1
-			end
-		end
-	end
-	print("💀 Kill All executed - Targeted " .. killed .. " player(s)")
-	print("   → This is the strongest client-sided version possible")
+    local killed = 0
+    
+    for _, humanoid in pairs(game:GetDescendants()) do
+        if humanoid:IsA("Humanoid") then
+            -- Skip our own humanoid
+            if humanoid == myHumanoid or (humanoid.Parent and humanoid.Parent == player.Character) then
+                continue
+            end
+            
+            -- Kill it
+            humanoid.Health = 0
+            humanoid:TakeDamage(999999)
+            
+            -- Extra destruction
+            task.spawn(function()
+                for i = 1, 4 do
+                    if humanoid and humanoid.Parent then
+                        humanoid.Health = 0
+                        local char = humanoid.Parent
+                        if char:FindFirstChild("Head") then char.Head:Destroy() end
+                        if char:FindFirstChild("HumanoidRootPart") then char.HumanoidRootPart:Destroy() end
+                    end
+                    task.wait(0.08)
+                end
+            end)
+            
+            killed += 1
+        end
+    end
+    
+    print("💀 Kill All executed - Targeted " .. killed .. " humanoids")
 end)
 
--- Bring Player TO Me
+-- Bring Player TO Me (unchanged)
 tpToMeBtn.MouseButton1Click:Connect(function()
-	local targetName = usernameBox.Text:match("^%s*(.-)%s*$")
-	if targetName == "" then
-		print("❌ Please enter a username")
-		return
-	end
-
-	local targetPlayer = Players:FindFirstChild(targetName)
-	if not targetPlayer then
-		for _, plr in pairs(Players:GetPlayers()) do
-			if plr.Name:lower():find(targetName:lower()) then
-				targetPlayer = plr
-				break
-			end
-		end
-	end
-
-	if targetPlayer and targetPlayer ~= player and targetPlayer.Character then
-		local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-
-		if myRoot and targetRoot then
-			targetRoot.CFrame = myRoot.CFrame + Vector3.new(3, 2, 0)
-			print("⬇️ Brought " .. targetPlayer.Name .. " to you")
-		else
-			print("❌ Missing character parts")
-		end
-	else
-		print("❌ Player '" .. targetName .. "' not found")
-	end
+    local targetName = usernameBox.Text:match("^%s*(.-)%s*$")
+    if targetName == "" then
+        print("❌ Please enter a username")
+        return
+    end
+    
+    local targetPlayer = Players:FindFirstChild(targetName)
+    if not targetPlayer then
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr.Name:lower():find(targetName:lower()) then
+                targetPlayer = plr
+                break
+            end
+        end
+    end
+    
+    if targetPlayer and targetPlayer ~= player and targetPlayer.Character then
+        local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+        
+        if myRoot and targetRoot then
+            targetRoot.CFrame = myRoot.CFrame + Vector3.new(3, 2, 0)
+            print("⬇️ Brought " .. targetPlayer.Name .. " to you")
+        end
+    else
+        print("❌ Player not found")
+    end
 end)
 
--- Teleport TO Player
+-- Teleport TO Player (unchanged)
 meToThemBtn.MouseButton1Click:Connect(function()
-	local targetName = usernameBox.Text:match("^%s*(.-)%s*$")
-	if targetName == "" then
-		print("❌ Please enter a username")
-		return
-	end
-
-	local targetPlayer = Players:FindFirstChild(targetName)
-	if not targetPlayer then
-		for _, plr in pairs(Players:GetPlayers()) do
-			if plr.Name:lower():find(targetName:lower()) then
-				targetPlayer = plr
-				break
-			end
-		end
-	end
-
-	if targetPlayer and targetPlayer.Character then
-		local root = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-		local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-
-		if root and myRoot then
-			myRoot.CFrame = root.CFrame + Vector3.new(0, 3, 0)
-			print("🚀 Teleported to " .. targetPlayer.Name)
-		else
-			print("❌ Target has no character")
-		end
-	else
-		print("❌ Player '" .. targetName .. "' not found")
-	end
+    local targetName = usernameBox.Text:match("^%s*(.-)%s*$")
+    if targetName == "" then
+        print("❌ Please enter a username")
+        return
+    end
+    
+    local targetPlayer = Players:FindFirstChild(targetName)
+    if not targetPlayer then
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr.Name:lower():find(targetName:lower()) then
+                targetPlayer = plr
+                break
+            end
+        end
+    end
+    
+    if targetPlayer and targetPlayer.Character then
+        local root = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        
+        if root and myRoot then
+            myRoot.CFrame = root.CFrame + Vector3.new(0, 3, 0)
+            print("🚀 Teleported to " .. targetPlayer.Name)
+        end
+    else
+        print("❌ Player not found")
+    end
 end)
 
 -- Close
 closeBtn.MouseButton1Click:Connect(function()
-	mainFrame.Visible = false
+    mainFrame.Visible = false
 end)
 
 -- Mobile Toggle
@@ -295,11 +295,10 @@ mobileToggle.MouseButton1Click:Connect(toggleMenu)
 
 -- PC Toggle
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-	if gameProcessed then return end
-	if input.KeyCode == Enum.KeyCode.Insert then
-		toggleMenu()
-	end
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.Insert then
+        toggleMenu()
+    end
 end)
 
-print("✅ Cool Admin Menu loaded!")
-print("Mobile: Tap ⚡ | PC: Press Insert")
+print("✅ Cool Admin Menu loaded with Game-Wide Kill All!")
