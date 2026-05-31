@@ -1,0 +1,175 @@
+-- StarterPlayer > StarterPlayerScripts > CoolAdminMenu (LocalScript)
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+
+local noclipEnabled = false
+local immortalityEnabled = false
+
+-- Create GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CoolAdminMenu"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Main Menu Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 280, 0, 320)
+mainFrame.Position = UDim2.new(0.5, -140, 0.5, -160)
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Visible = false
+mainFrame.Parent = screenGui
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+title.Text = "⚡ COOL ADMIN MENU ⚡"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = mainFrame
+
+local noclipBtn = Instance.new("TextButton")
+noclipBtn.Size = UDim2.new(0.9, 0, 0, 50)
+noclipBtn.Position = UDim2.new(0.05, 0, 0.25, 0)
+noclipBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+noclipBtn.Text = "Noclip: OFF"
+noclipBtn.TextColor3 = Color3.new(1, 1, 1)
+noclipBtn.TextScaled = true
+noclipBtn.Font = Enum.Font.GothamSemibold
+noclipBtn.Parent = mainFrame
+
+local immortalityBtn = Instance.new("TextButton")
+immortalityBtn.Size = UDim2.new(0.9, 0, 0, 50)
+immortalityBtn.Position = UDim2.new(0.05, 0, 0.45, 0)
+immortalityBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+immortalityBtn.Text = "Immortality: OFF"
+immortalityBtn.TextColor3 = Color3.new(1, 1, 1)
+immortalityBtn.TextScaled = true
+immortalityBtn.Font = Enum.Font.GothamSemibold
+immortalityBtn.Parent = mainFrame
+
+local killAllBtn = Instance.new("TextButton")
+killAllBtn.Size = UDim2.new(0.9, 0, 0, 50)
+killAllBtn.Position = UDim2.new(0.05, 0, 0.65, 0)
+killAllBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+killAllBtn.Text = "💀 KILL ALL OTHERS"
+killAllBtn.TextColor3 = Color3.new(1, 1, 1)
+killAllBtn.TextScaled = true
+killAllBtn.Font = Enum.Font.GothamBold
+killAllBtn.Parent = mainFrame
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -35, 0, 10)
+closeBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+closeBtn.Text = "✕"
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.TextScaled = true
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.Parent = mainFrame
+
+-- Mobile Toggle Button (Floating)
+local mobileToggle = Instance.new("TextButton")
+mobileToggle.Size = UDim2.new(0, 60, 0, 60)
+mobileToggle.Position = UDim2.new(0, 20, 0.5, -30)
+mobileToggle.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+mobileToggle.Text = "⚡"
+mobileToggle.TextColor3 = Color3.new(1, 1, 1)
+mobileToggle.TextScaled = true
+mobileToggle.Font = Enum.Font.GothamBold
+mobileToggle.Parent = screenGui
+
+-- Make it round and nice
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(1, 0)
+corner.Parent = mobileToggle
+
+-- ==================== FUNCTIONS ====================
+
+local function toggleMenu()
+    mainFrame.Visible = not mainFrame.Visible
+end
+
+-- Noclip
+local noclipConnection
+noclipBtn.MouseButton1Click:Connect(function()
+    noclipEnabled = not noclipEnabled
+    noclipBtn.Text = "Noclip: " .. (noclipEnabled and "ON" or "OFF")
+    noclipBtn.BackgroundColor3 = noclipEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
+    
+    if noclipEnabled then
+        noclipConnection = RunService.Stepped:Connect(function()
+            if player.Character then
+                for _, part in pairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end
+        end)
+    else
+        if noclipConnection then noclipConnection:Disconnect() end
+    end
+end)
+
+-- Immortality
+immortalityBtn.MouseButton1Click:Connect(function()
+    immortalityEnabled = not immortalityEnabled
+    immortalityBtn.Text = "Immortality: " .. (immortalityEnabled and "ON" or "OFF")
+    immortalityBtn.BackgroundColor3 = immortalityEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
+    
+    if immortalityEnabled then
+        spawn(function()
+            while immortalityEnabled and player.Character do
+                local hum = player.Character:FindFirstChildOfClass("Humanoid")
+                if hum then
+                    hum.MaxHealth = math.huge
+                    hum.Health = math.huge
+                end
+                task.wait(0.1)
+            end
+        end)
+    end
+end)
+
+-- Kill All
+killAllBtn.MouseButton1Click:Connect(function()
+    local killed = 0
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= player and plr.Character then
+            local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.Health = 0
+                humanoid:TakeDamage(99999)
+                killed += 1
+            end
+        end
+    end
+    print("💀 Kill All executed - Targeted " .. killed .. " player(s)")
+end)
+
+-- Close Menu
+closeBtn.MouseButton1Click:Connect(function()
+    mainFrame.Visible = false
+end)
+
+-- Mobile Toggle
+mobileToggle.MouseButton1Click:Connect(toggleMenu)
+
+-- PC Toggle (Insert key)
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.Insert then
+        toggleMenu()
+    end
+end)
+
+print("✅ Cool Admin Menu loaded! (Mobile + PC)")
+print("Mobile: Tap the blue ⚡ button | PC: Press Insert")
