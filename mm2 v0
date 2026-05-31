@@ -15,10 +15,9 @@ screenGui.Name = "CoolAdminMenu"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Main Frame (made taller for new feature)
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 280, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -140, 0.5, -200)
+mainFrame.Size = UDim2.new(0, 280, 0, 460)
+mainFrame.Position = UDim2.new(0.5, -140, 0.5, -230)
 mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
@@ -35,10 +34,9 @@ title.TextScaled = true
 title.Font = Enum.Font.GothamBold
 title.Parent = mainFrame
 
--- Noclip
 local noclipBtn = Instance.new("TextButton")
 noclipBtn.Size = UDim2.new(0.9, 0, 0, 45)
-noclipBtn.Position = UDim2.new(0.05, 0, 0.16, 0)
+noclipBtn.Position = UDim2.new(0.05, 0, 0.14, 0)
 noclipBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 noclipBtn.Text = "Noclip: OFF"
 noclipBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -46,10 +44,9 @@ noclipBtn.TextScaled = true
 noclipBtn.Font = Enum.Font.GothamSemibold
 noclipBtn.Parent = mainFrame
 
--- Immortality
 local immortalityBtn = Instance.new("TextButton")
 immortalityBtn.Size = UDim2.new(0.9, 0, 0, 45)
-immortalityBtn.Position = UDim2.new(0.05, 0, 0.31, 0)
+immortalityBtn.Position = UDim2.new(0.05, 0, 0.27, 0)
 immortalityBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 immortalityBtn.Text = "Immortality: OFF"
 immortalityBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -57,10 +54,9 @@ immortalityBtn.TextScaled = true
 immortalityBtn.Font = Enum.Font.GothamSemibold
 immortalityBtn.Parent = mainFrame
 
--- Kill All
 local killAllBtn = Instance.new("TextButton")
 killAllBtn.Size = UDim2.new(0.9, 0, 0, 45)
-killAllBtn.Position = UDim2.new(0.05, 0, 0.46, 0)
+killAllBtn.Position = UDim2.new(0.05, 0, 0.40, 0)
 killAllBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
 killAllBtn.Text = "💀 KILL ALL OTHERS"
 killAllBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -71,34 +67,44 @@ killAllBtn.Parent = mainFrame
 -- Teleport Section
 local tpLabel = Instance.new("TextLabel")
 tpLabel.Size = UDim2.new(0.9, 0, 0, 25)
-tpLabel.Position = UDim2.new(0.05, 0, 0.62, 0)
+tpLabel.Position = UDim2.new(0.05, 0, 0.55, 0)
 tpLabel.BackgroundTransparency = 1
-tpLabel.Text = "Teleport to Player:"
+tpLabel.Text = "Teleport Section"
 tpLabel.TextColor3 = Color3.new(1, 1, 1)
 tpLabel.TextScaled = true
-tpLabel.Font = Enum.Font.GothamSemibold
+tpLabel.Font = Enum.Font.GothamBold
 tpLabel.Parent = mainFrame
 
 local usernameBox = Instance.new("TextBox")
 usernameBox.Size = UDim2.new(0.9, 0, 0, 40)
-usernameBox.Position = UDim2.new(0.05, 0, 0.69, 0)
+usernameBox.Position = UDim2.new(0.05, 0, 0.61, 0)
 usernameBox.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-usernameBox.PlaceholderText = "Enter username here..."
+usernameBox.PlaceholderText = "Enter username..."
 usernameBox.Text = ""
 usernameBox.TextColor3 = Color3.new(1, 1, 1)
 usernameBox.TextScaled = true
 usernameBox.Font = Enum.Font.Gotham
 usernameBox.Parent = mainFrame
 
-local tpBtn = Instance.new("TextButton")
-tpBtn.Size = UDim2.new(0.9, 0, 0, 45)
-tpBtn.Position = UDim2.new(0.05, 0, 0.82, 0)
-tpBtn.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
-tpBtn.Text = "🚀 TELEPORT"
-tpBtn.TextColor3 = Color3.new(1, 1, 1)
-tpBtn.TextScaled = true
-tpBtn.Font = Enum.Font.GothamBold
-tpBtn.Parent = mainFrame
+local tpToMeBtn = Instance.new("TextButton")
+tpToMeBtn.Size = UDim2.new(0.9, 0, 0, 45)
+tpToMeBtn.Position = UDim2.new(0.05, 0, 0.73, 0)
+tpToMeBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 100)
+tpToMeBtn.Text = "⬇️ BRING PLAYER TO ME"
+tpToMeBtn.TextColor3 = Color3.new(1, 1, 1)
+tpToMeBtn.TextScaled = true
+tpToMeBtn.Font = Enum.Font.GothamBold
+tpToMeBtn.Parent = mainFrame
+
+local meToThemBtn = Instance.new("TextButton")
+meToThemBtn.Size = UDim2.new(0.9, 0, 0, 45)
+meToThemBtn.Position = UDim2.new(0.05, 0, 0.86, 0)
+meToThemBtn.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
+meToThemBtn.Text = "🚀 TELEPORT TO PLAYER"
+meToThemBtn.TextColor3 = Color3.new(1, 1, 1)
+meToThemBtn.TextScaled = true
+meToThemBtn.Font = Enum.Font.GothamBold
+meToThemBtn.Parent = mainFrame
 
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 30, 0, 30)
@@ -110,7 +116,7 @@ closeBtn.TextScaled = true
 closeBtn.Font = Enum.Font.GothamBold
 closeBtn.Parent = mainFrame
 
--- Mobile Toggle Button
+-- Mobile Toggle
 local mobileToggle = Instance.new("TextButton")
 mobileToggle.Size = UDim2.new(0, 60, 0, 60)
 mobileToggle.Position = UDim2.new(0, 20, 0.5, -30)
@@ -128,116 +134,172 @@ corner.Parent = mobileToggle
 -- ==================== FUNCTIONS ====================
 
 local function toggleMenu()
-    mainFrame.Visible = not mainFrame.Visible
+	mainFrame.Visible = not mainFrame.Visible
 end
 
 -- Noclip
 local noclipConnection
 noclipBtn.MouseButton1Click:Connect(function()
-    noclipEnabled = not noclipEnabled
-    noclipBtn.Text = "Noclip: " .. (noclipEnabled and "ON" or "OFF")
-    noclipBtn.BackgroundColor3 = noclipEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
-    
-    if noclipEnabled then
-        noclipConnection = RunService.Stepped:Connect(function()
-            if player.Character then
-                for _, part in pairs(player.Character:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                    end
-                end
-            end
-        end)
-    else
-        if noclipConnection then noclipConnection:Disconnect() end
-    end
+	noclipEnabled = not noclipEnabled
+	noclipBtn.Text = "Noclip: " .. (noclipEnabled and "ON" or "OFF")
+	noclipBtn.BackgroundColor3 = noclipEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
+
+	if noclipEnabled then
+		noclipConnection = RunService.Stepped:Connect(function()
+			if player.Character then
+				for _, part in pairs(player.Character:GetDescendants()) do
+					if part:IsA("BasePart") then
+						part.CanCollide = false
+					end
+				end
+			end
+		end)
+	else
+		if noclipConnection then noclipConnection:Disconnect() end
+	end
 end)
 
 -- Immortality
 immortalityBtn.MouseButton1Click:Connect(function()
-    immortalityEnabled = not immortalityEnabled
-    immortalityBtn.Text = "Immortality: " .. (immortalityEnabled and "ON" or "OFF")
-    immortalityBtn.BackgroundColor3 = immortalityEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
-    
-    if immortalityEnabled then
-        spawn(function()
-            while immortalityEnabled and player.Character do
-                local hum = player.Character:FindFirstChildOfClass("Humanoid")
-                if hum then
-                    hum.MaxHealth = math.huge
-                    hum.Health = math.huge
-                end
-                task.wait(0.1)
-            end
-        end)
-    end
+	immortalityEnabled = not immortalityEnabled
+	immortalityBtn.Text = "Immortality: " .. (immortalityEnabled and "ON" or "OFF")
+	immortalityBtn.BackgroundColor3 = immortalityEnabled and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 50)
+
+	if immortalityEnabled then
+		spawn(function()
+			while immortalityEnabled and player.Character do
+				local hum = player.Character:FindFirstChildOfClass("Humanoid")
+				if hum then
+					hum.MaxHealth = math.huge
+					hum.Health = math.huge
+				end
+				task.wait(0.1)
+			end
+		end)
+	end
 end)
 
--- Kill All
+-- 🔥 STRONGER KILL ALL OTHERS
 killAllBtn.MouseButton1Click:Connect(function()
-    local killed = 0
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= player and plr.Character then
-            local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid.Health = 0
-                humanoid:TakeDamage(99999)
-                killed += 1
-            end
-        end
-    end
-    print("💀 Kill All executed - Targeted " .. killed .. " player(s)")
+	local killed = 0
+	for _, plr in pairs(Players:GetPlayers()) do
+		if plr ~= player and plr.Character then
+			local char = plr.Character
+			local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+			if humanoid then
+				-- Primary kill methods
+				humanoid.Health = 0
+				humanoid:TakeDamage(999999)
+
+				-- Extra aggressive methods
+				task.spawn(function()
+					for i = 1, 5 do
+						if char and humanoid then
+							humanoid.Health = 0
+							if char:FindFirstChild("Head") then
+								char.Head:Destroy()
+							end
+							if char:FindFirstChild("HumanoidRootPart") then
+								char.HumanoidRootPart:Destroy()
+							end
+							if char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso") then
+								(char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")):Destroy()
+							end
+						end
+						task.wait(0.1)
+					end
+				end)
+
+				killed += 1
+			end
+		end
+	end
+	print("💀 Kill All executed - Targeted " .. killed .. " player(s)")
+	print("   → This is the strongest client-sided version possible")
 end)
 
--- Teleport to Player
-tpBtn.MouseButton1Click:Connect(function()
-    local targetName = usernameBox.Text:match("^%s*(.-)%s*$") -- trim whitespace
-    if targetName == "" then
-        print("❌ Please enter a username")
-        return
-    end
-    
-    local targetPlayer = Players:FindFirstChild(targetName)
-    if not targetPlayer then
-        -- Try partial match
-        for _, plr in pairs(Players:GetPlayers()) do
-            if plr.Name:lower():find(targetName:lower()) then
-                targetPlayer = plr
-                break
-            end
-        end
-    end
-    
-    if targetPlayer and targetPlayer.Character then
-        local root = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-        local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-        
-        if root and myRoot then
-            myRoot.CFrame = root.CFrame + Vector3.new(0, 3, 0) -- slightly above
-            print("🚀 Teleported to " .. targetPlayer.Name)
-        else
-            print("❌ Target has no character")
-        end
-    else
-        print("❌ Player '" .. targetName .. "' not found")
-    end
+-- Bring Player TO Me
+tpToMeBtn.MouseButton1Click:Connect(function()
+	local targetName = usernameBox.Text:match("^%s*(.-)%s*$")
+	if targetName == "" then
+		print("❌ Please enter a username")
+		return
+	end
+
+	local targetPlayer = Players:FindFirstChild(targetName)
+	if not targetPlayer then
+		for _, plr in pairs(Players:GetPlayers()) do
+			if plr.Name:lower():find(targetName:lower()) then
+				targetPlayer = plr
+				break
+			end
+		end
+	end
+
+	if targetPlayer and targetPlayer ~= player and targetPlayer.Character then
+		local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+		if myRoot and targetRoot then
+			targetRoot.CFrame = myRoot.CFrame + Vector3.new(3, 2, 0)
+			print("⬇️ Brought " .. targetPlayer.Name .. " to you")
+		else
+			print("❌ Missing character parts")
+		end
+	else
+		print("❌ Player '" .. targetName .. "' not found")
+	end
+end)
+
+-- Teleport TO Player
+meToThemBtn.MouseButton1Click:Connect(function()
+	local targetName = usernameBox.Text:match("^%s*(.-)%s*$")
+	if targetName == "" then
+		print("❌ Please enter a username")
+		return
+	end
+
+	local targetPlayer = Players:FindFirstChild(targetName)
+	if not targetPlayer then
+		for _, plr in pairs(Players:GetPlayers()) do
+			if plr.Name:lower():find(targetName:lower()) then
+				targetPlayer = plr
+				break
+			end
+		end
+	end
+
+	if targetPlayer and targetPlayer.Character then
+		local root = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+		local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+
+		if root and myRoot then
+			myRoot.CFrame = root.CFrame + Vector3.new(0, 3, 0)
+			print("🚀 Teleported to " .. targetPlayer.Name)
+		else
+			print("❌ Target has no character")
+		end
+	else
+		print("❌ Player '" .. targetName .. "' not found")
+	end
 end)
 
 -- Close
 closeBtn.MouseButton1Click:Connect(function()
-    mainFrame.Visible = false
+	mainFrame.Visible = false
 end)
 
 -- Mobile Toggle
 mobileToggle.MouseButton1Click:Connect(toggleMenu)
 
--- PC Toggle (Insert)
+-- PC Toggle
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    if input.KeyCode == Enum.KeyCode.Insert then
-        toggleMenu()
-    end
+	if gameProcessed then return end
+	if input.KeyCode == Enum.KeyCode.Insert then
+		toggleMenu()
+	end
 end)
 
-print("✅ Cool Admin Menu loaded! (Mobile + PC + Teleport)")
-print("Mobile: Tap blue ⚡ | PC: Press Insert")
+print("✅ Cool Admin Menu loaded!")
+print("Mobile: Tap ⚡ | PC: Press Insert")
