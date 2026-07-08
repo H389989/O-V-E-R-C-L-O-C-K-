@@ -1,0 +1,110 @@
+-- StarterPlayerScripts > LocalScript
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+----------------------------------------------------
+-- GUI
+----------------------------------------------------
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "GUIViewer"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 500, 0, 400)
+Frame.Position = UDim2.new(0.5,-250,0.5,-200)
+Frame.BackgroundColor3 = Color3.fromRGB(35,35,35)
+Frame.Parent = ScreenGui
+
+local UsernameBox = Instance.new("TextBox")
+UsernameBox.Size = UDim2.new(1,-20,0,35)
+UsernameBox.Position = UDim2.new(0,10,0,10)
+UsernameBox.PlaceholderText = "Enter Username"
+UsernameBox.Text = ""
+UsernameBox.Parent = Frame
+
+local RevealButton = Instance.new("TextButton")
+RevealButton.Size = UDim2.new(1,-20,0,40)
+RevealButton.Position = UDim2.new(0,10,0,55)
+RevealButton.Text = "Reveal GUI"
+RevealButton.Parent = Frame
+
+local Output = Instance.new("ScrollingFrame")
+Output.Size = UDim2.new(1,-20,1,-105)
+Output.Position = UDim2.new(0,10,0,95)
+Output.CanvasSize = UDim2.new()
+Output.ScrollBarThickness = 8
+Output.Parent = Frame
+
+local Layout = Instance.new("UIListLayout")
+Layout.Parent = Output
+
+----------------------------------------------------
+-- Function
+----------------------------------------------------
+
+local function AddLine(text)
+    local Label = Instance.new("TextLabel")
+    Label.Size = UDim2.new(1,-5,0,22)
+    Label.BackgroundTransparency = 1
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.TextColor3 = Color3.new(1,1,1)
+    Label.Font = Enum.Font.Code
+    Label.TextSize = 16
+    Label.Text = text
+    Label.Parent = Output
+
+    task.wait()
+
+    Output.CanvasSize = UDim2.new(
+        0,
+        0,
+        0,
+        Layout.AbsoluteContentSize.Y + 10
+    )
+end
+
+local function Scan(object, indent)
+    indent = indent or ""
+
+    AddLine(indent .. object.ClassName .. " - " .. object.Name)
+
+    for _,child in ipairs(object:GetChildren()) do
+        Scan(child, indent .. "    ")
+    end
+end
+
+----------------------------------------------------
+-- Button
+----------------------------------------------------
+
+RevealButton.MouseButton1Click:Connect(function()
+
+    for _,v in ipairs(Output:GetChildren()) do
+        if not v:IsA("UIListLayout") then
+            v:Destroy()
+        end
+    end
+
+    local target = Players:FindFirstChild(UsernameBox.Text)
+
+    if not target then
+        AddLine("Player not found.")
+        return
+    end
+
+    local gui = target:FindFirstChild("PlayerGui")
+
+    if not gui then
+        AddLine("PlayerGui not accessible.")
+        return
+    end
+
+    AddLine("Scanning " .. target.Name .. "'s PlayerGui")
+    AddLine("--------------------------------")
+
+    Scan(gui)
+
+end)
